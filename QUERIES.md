@@ -8,7 +8,14 @@ WHERE DATEDIFF(dept_manager.to_date, dept_manager.from_date) = (SELECT MAX(DATED
 
 3.
 
-4.
+4. SELECT first_name, last_name, gender, salary
+FROM employees.employees, employees.titles, employees.salaries
+WHERE gender="F" AND birth_date < '1990-01-01'
+AND employees.emp_no = titles.emp_no AND titles.title="Manager"
+AND curdate() BETWEEN titles.from_date AND titles.to_date
+AND employees.emp_no = salaries.emp_no
+AND curdate() BETWEEN salaries.from_date AND salaries.to_date
+AND salary > 80000;
 
 5a.
 
