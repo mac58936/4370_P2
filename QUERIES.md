@@ -21,6 +21,31 @@ WHERE tableF.Ratio > tableM.Ratio AND tableF.dept_name = tableM.dept_name
 ORDER BY Ratio DESC
 LIMIT 1;
 
+1a. SELECT tableF.dept_name AS dept_name, tableF.Ratio/tableM.Ratio AS Ratio
+FROM
+	(SELECT departments.dept_name, AVG(salaries.salary) AS Ratio
+		FROM employees.departments
+		INNER JOIN employees.dept_emp ON departments.dept_no = dept_emp.dept_no
+		INNER JOIN employees.employees ON dept_emp.emp_no = employees.emp_no
+		INNER JOIN employees.salaries ON employees.emp_no = salaries.emp_no
+		WHERE employees.gender = 'F' 
+        AND curdate() BETWEEN dept_emp.from_date AND dept_emp.to_date
+        AND curdate() BETWEEN salaries.from_date AND salaries.to_date
+		GROUP BY departments.dept_name)
+	AS tableF, 
+    (SELECT departments.dept_name, AVG(salaries.salary) AS Ratio
+		FROM employees.departments
+		INNER JOIN employees.dept_emp ON departments.dept_no = dept_emp.dept_no
+		INNER JOIN employees.employees ON dept_emp.emp_no = employees.emp_no
+		INNER JOIN employees.salaries ON employees.emp_no = salaries.emp_no
+		WHERE employees.gender = 'M' 
+        AND curdate() BETWEEN dept_emp.from_date AND dept_emp.to_date
+        AND curdate() BETWEEN salaries.from_date AND salaries.to_date
+		GROUP BY departments.dept_name)
+	AS tableM
+WHERE tableF.Ratio > tableM.Ratio AND tableF.dept_name = tableM.dept_name
+ORDER BY Ratio DESC;
+
 2.
 SELECT employees.first_name, employees.last_name, DATEDIFF(dept_manager.to_date, dept_manager.from_date) AS Total_Duration_Days
 FROM dept_manager
