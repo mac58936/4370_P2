@@ -17,6 +17,16 @@ AND @now BETWEEN s.from_date AND s.to_date
 GROUP BY d.dept_name, floor(year(e.birth_date) / 10) * 10
 ORDER BY d.dept_name, floor(year(e.birth_date) / 10) * 10;
 
+3b. SELECT d.dept_name, COUNT(*) as numEmployeesBornInDecade, floor(year(e.birth_date) / 10) * 10 as decade, AVG(s.salary) as AvgSal
+FROM employees.departments d, employees.dept_emp de, employees.employees e, employees.salaries s
+WHERE d.dept_no = de.dept_no
+AND de.emp_no = e.emp_no
+AND curdate() BETWEEN de.from_date AND de.to_date
+AND e.emp_no = s.emp_no
+AND curdate() BETWEEN s.from_date AND s.to_date
+GROUP BY d.dept_name, floor(year(e.birth_date) / 10) * 10
+ORDER BY d.dept_name, floor(year(e.birth_date) / 10) * 10;
+
 4. SELECT first_name, last_name, gender, salary
 FROM employees.employees, employees.titles, employees.salaries
 WHERE gender="F" AND birth_date < '1990-01-01'
