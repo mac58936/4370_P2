@@ -1,4 +1,25 @@
 1.
+SELECT tableF.dept_name AS dept_name, tableF.Ratio AS FemaleAVG, tableM.Ratio AS MaleAVG, tableF.Ratio/tableM.Ratio AS Ratio
+FROM
+	(SELECT departments.dept_name, AVG(salaries.salary) AS Ratio
+		FROM departments
+		INNER JOIN dept_emp ON departments.dept_no = dept_emp.dept_no
+		INNER JOIN employees ON dept_emp.emp_no = employees.emp_no
+		INNER JOIN salaries ON employees.emp_no = salaries.emp_no
+		WHERE employees.gender = 'F' 
+		GROUP BY departments.dept_name)
+	AS tableF, 
+    (SELECT departments.dept_name, AVG(salaries.salary) AS Ratio
+		FROM departments
+		INNER JOIN dept_emp ON departments.dept_no = dept_emp.dept_no
+		INNER JOIN employees ON dept_emp.emp_no = employees.emp_no
+		INNER JOIN salaries ON employees.emp_no = salaries.emp_no
+		WHERE employees.gender = 'M' 
+		GROUP BY departments.dept_name)
+	AS tableM
+WHERE tableF.Ratio > tableM.Ratio AND tableF.dept_name = tableM.dept_name
+ORDER BY Ratio DESC
+LIMIT 1;
 
 2.
 SELECT employees.first_name, employees.last_name, DATEDIFF(dept_manager.to_date, dept_manager.from_date) AS Total_Duration_Days
